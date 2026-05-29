@@ -311,15 +311,13 @@ fun SettingsScreen(
                 )
             }
 
-            Surface(
+            GlassCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(22.dp),
-                color = MaterialTheme.colorScheme.primary
+                contentPadding = 16.dp
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
@@ -334,22 +332,22 @@ fun SettingsScreen(
                         Text(
                             text = currentUser?.name ?: "学习同学",
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = currentSemester?.name ?: "默认学期",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.84f)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Surface(
                             shape = RoundedCornerShape(999.dp),
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.16f)
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
                         ) {
                             Text(
                                 text = if (appPrefs.themeStyle == AppThemeStyle.PURE_WHITE) "纯白主题" else "液态玻璃主题",
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.labelMedium
                             )
                         }

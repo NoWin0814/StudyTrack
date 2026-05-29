@@ -26,6 +26,7 @@ import com.repea.studytrack.ui.theme.StudyTrackTheme
 import com.repea.studytrack.viewmodel.MainViewModel
 import com.repea.studytrack.viewmodel.UserPreferencesViewModel
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import com.repea.studytrack.repository.AppThemeStyle
 import com.repea.studytrack.ui.components.ProvideLiquidGlass
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,7 +81,7 @@ fun MainScreen(
     val enableBackdrop = userPrefs.themeStyle == AppThemeStyle.LIQUID_GLASS && !isProbablyEmulator
 
     val backdrop = if (enableBackdrop) {
-        rememberLayerBackdrop {
+        rememberLayerBackdrop(graphicsLayer = rememberGraphicsLayer()) {
             drawRect(Color.White)
             drawContent()
         }

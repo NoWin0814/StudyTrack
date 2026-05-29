@@ -1,6 +1,5 @@
 package com.repea.studytrack.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -58,6 +56,7 @@ import com.repea.studytrack.repository.AppThemeStyle
 import com.repea.studytrack.ui.theme.LocalAppThemeStyle
 import com.repea.studytrack.data.local.entity.ExamType
 import com.repea.studytrack.data.local.entity.Subject
+import com.repea.studytrack.ui.components.GlassButton
 import com.repea.studytrack.ui.components.GlassCard
 import com.repea.studytrack.ui.components.GlassDropdownMenu
 import com.repea.studytrack.ui.components.StudyCapsuleButton
@@ -218,53 +217,23 @@ fun AddExamScreen(
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(22.dp),
                 contentPadding = 18.dp
             ) {
-                val primaryTextColor = if (themeStyle == AppThemeStyle.PURE_WHITE) {
-                    Color(0xFF0F172A)
-                } else {
-                    MaterialTheme.colorScheme.onPrimary
-                }
-                val secondaryTextColor = if (themeStyle == AppThemeStyle.PURE_WHITE) {
-                    Color(0xFF475569)
-                } else {
-                    MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f)
-                }
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
-                    color = Color.Transparent
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                brush = Brush.horizontalGradient(
-                                    colors = listOf(
-                                        Color(0xFFA9C9FF),
-                                        Color(0xFF7E8FFF)
-                                    )
-                                )
-                            )
-                            .padding(horizontal = 18.dp, vertical = 20.dp)
-                    ) {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text(
-                                text = "输入分数",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = secondaryTextColor
-                            )
-                            Text(
-                                text = if (score.isBlank()) "--" else score,
-                                style = MaterialTheme.typography.headlineLarge,
-                                color = primaryTextColor,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = selectedSubject?.let { "/ ${formatNumber(it.fullScore)}" } ?: "/ 100",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = secondaryTextColor
-                            )
-                        }
-                    }
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = "输入分数",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = if (score.isBlank()) "--" else score,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = selectedSubject?.let { "/ ${formatNumber(it.fullScore)}" } ?: "/ 100",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
             GlassCard(
@@ -415,24 +384,21 @@ fun AddExamScreen(
                     )
                 }
             }
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
-                color = MaterialTheme.colorScheme.primary,
+            GlassButton(
                 onClick = {
                     val scoreVal = score.toDoubleOrNull()
                     formError = null
                     if (selectedSubject == null) {
                         scoreError = "请先选择科目"
-                        return@Surface
+                        return@GlassButton
                     }
                     if (scoreVal == null) {
                         scoreError = "请输入有效分数"
-                        return@Surface
+                        return@GlassButton
                     }
                     if (scoreVal > selectedSubject!!.fullScore) {
                         scoreError = "分数不能超过满分"
-                        return@Surface
+                        return@GlassButton
                     }
                     val finalExamName = examName.ifBlank { selectedExamType.label }
                     val duplicateRecord = allRecords.firstOrNull {
@@ -444,7 +410,7 @@ fun AddExamScreen(
                     }
                     if (duplicateRecord != null) {
                         formError = "检测到相同成绩记录，已拦截重复保存。"
-                        return@Surface
+                        return@GlassButton
                     }
                     if (recordId != null && editingRecord != null) {
                         viewModel.updateRecord(
@@ -480,21 +446,20 @@ fun AddExamScreen(
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                     navController.popBackStack()
-                }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 14.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (recordId == null) "保存记录" else "保存修改",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+                Text(
+                    text = if (recordId == null) "保存记录" else "保存修改",
+                    color = if (themeStyle == AppThemeStyle.PURE_WHITE) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             if (formError != null) {
                 Text(

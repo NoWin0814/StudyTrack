@@ -56,12 +56,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.repea.studytrack.data.local.entity.ExamType
 import com.repea.studytrack.data.local.entity.Subject
+import com.repea.studytrack.repository.AppThemeStyle
+import com.repea.studytrack.ui.components.GlassButton
 import com.repea.studytrack.ui.components.GlassCard
 import com.repea.studytrack.ui.components.GlassDropdownMenu
 import com.repea.studytrack.ui.components.StudyCapsuleButton
 import com.repea.studytrack.ui.components.StudyHeroCard
 import com.repea.studytrack.ui.components.StudySectionHeader
 import com.repea.studytrack.ui.components.StudyTextField
+import com.repea.studytrack.ui.theme.LocalAppThemeStyle
 import com.repea.studytrack.viewmodel.ExamViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -295,22 +298,19 @@ fun BatchAddExamScreen(
                 )
             }
 
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                color = MaterialTheme.colorScheme.primary,
+            GlassButton(
                 onClick = {
                     errorMessage = null
 
                     if (examName.isBlank()) {
                         errorMessage = "请先填写考试主题。"
-                        return@Surface
+                        return@GlassButton
                     }
 
                     val selectedSubjectIds = entries.mapNotNull { it.subject?.id }
                     if (selectedSubjectIds.size != selectedSubjectIds.distinct().size) {
                         errorMessage = "同一场考试中不能重复选择同一科目。"
-                        return@Surface
+                        return@GlassButton
                     }
 
                     val validEntries = entries.mapNotNull { e ->
@@ -322,7 +322,7 @@ fun BatchAddExamScreen(
 
                     if (validEntries.isEmpty()) {
                         errorMessage = "请至少为一个科目选择科目并填写有效分数。"
-                        return@Surface
+                        return@GlassButton
                     }
 
                     val duplicatedEntries = validEntries.filter { (subject, scoreVal, _) ->
@@ -339,7 +339,7 @@ fun BatchAddExamScreen(
 
                     if (entriesToSave.isEmpty()) {
                         errorMessage = "待保存记录均已存在，未重复写入。"
-                        return@Surface
+                        return@GlassButton
                     }
 
                     entriesToSave.forEach { (subject, scoreVal, e) ->
@@ -364,21 +364,24 @@ fun BatchAddExamScreen(
                     }
                     android.widget.Toast.makeText(context, toastMessage, android.widget.Toast.LENGTH_LONG).show()
                     navController.popBackStack()
-                }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp)
             ) {
-                Box(
+                val themeStyle = LocalAppThemeStyle.current
+                Text(
+                    text = "保存全部成绩",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 14.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "保存全部成绩",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+                    color = if (themeStyle == AppThemeStyle.LIQUID_GLASS) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onPrimary
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
     }

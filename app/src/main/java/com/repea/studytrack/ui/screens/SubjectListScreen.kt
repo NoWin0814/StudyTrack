@@ -28,12 +28,10 @@ import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -54,10 +52,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.repea.studytrack.data.local.entity.Subject
+import com.repea.studytrack.repository.AppThemeStyle
+import com.repea.studytrack.ui.components.GlassButton
 import com.repea.studytrack.ui.components.GlassCard
 import com.repea.studytrack.ui.components.StudyMetricCard
 import com.repea.studytrack.ui.components.StudySectionHeader
 import com.repea.studytrack.ui.components.StudyTextField
+import com.repea.studytrack.ui.theme.LocalAppThemeStyle
 import com.repea.studytrack.viewmodel.SubjectViewModel
 import com.repea.studytrack.viewmodel.UserManagerViewModel
 
@@ -82,6 +83,11 @@ fun SubjectListScreen(
     val listState = rememberLazyListState()
     val averageFullScore = remember(subjects) {
         if (subjects.isEmpty()) 0.0 else subjects.map { it.fullScore }.average()
+    }
+    val buttonTextColor = if (LocalAppThemeStyle.current == AppThemeStyle.LIQUID_GLASS) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onPrimary
     }
 
     if (showDialog) {
@@ -122,27 +128,17 @@ fun SubjectListScreen(
                             Text("取消")
                         }
                         Spacer(modifier = Modifier.size(8.dp))
-                        Surface(
-                            shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.clip(RoundedCornerShape(16.dp))
+                        GlassButton(
+                            onClick = {},
+                            shape = RoundedCornerShape(14.dp)
                         ) {
                             Text(
                                 text = if (editingSubject == null) "保存科目" else "保存修改",
-                                modifier = Modifier
-                                    .padding(horizontal = 18.dp, vertical = 10.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(Color.Transparent),
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = buttonTextColor
                             )
                         }
                     }
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp)),
-                        shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.primary,
+                    GlassButton(
                         onClick = {
                             val score = newSubjectScore.toDoubleOrNull()
                             if (newSubjectName.isNotBlank() && score != null) {
@@ -157,19 +153,15 @@ fun SubjectListScreen(
                                 newSubjectName = ""
                                 newSubjectScore = "100"
                             }
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
                     ) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = if (editingSubject == null) "确认保存" else "确认修改",
-                                modifier = Modifier.padding(vertical = 12.dp),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
+                        Text(
+                            text = if (editingSubject == null) "确认保存" else "确认修改",
+                            color = buttonTextColor,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
@@ -179,24 +171,21 @@ fun SubjectListScreen(
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            FloatingActionButton(
+            GlassButton(
                 onClick = {
                     editingSubject = null
                     newSubjectName = ""
                     newSubjectScore = "100"
                     showDialog = true
                 },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = RoundedCornerShape(20.dp)
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 18.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "添加科目")
-                    Text("添加科目")
+                    Icon(Icons.Default.Add, contentDescription = "添加科目", tint = buttonTextColor)
+                    Text("添加科目", color = buttonTextColor)
                 }
             }
         }

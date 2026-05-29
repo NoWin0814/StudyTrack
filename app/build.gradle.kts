@@ -10,14 +10,14 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 android {
     namespace = "com.repea.studytrack"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.repea.studytrack"
         minSdk = 29
         targetSdk = 36
-        versionCode = 50000
-        versionName = "V5.0.0"
+        versionCode = 50003
+        versionName = "V5.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -90,7 +90,8 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     // Liquid Glass (AndroidLiquidGlass)
-    implementation("io.github.kyant0:backdrop:1.0.6")
+    implementation("io.github.kyant0:backdrop-android:2.0.0")
+    implementation("io.github.kyant0:shapes-android:1.0.1")
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Apache POI (Excel)

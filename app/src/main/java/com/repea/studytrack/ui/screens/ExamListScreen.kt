@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,8 +50,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.repea.studytrack.data.local.entity.Subject
+import com.repea.studytrack.repository.AppThemeStyle
+import com.repea.studytrack.ui.components.GlassButton
 import com.repea.studytrack.ui.components.GlassCard
 import com.repea.studytrack.ui.components.GlassDropdownMenu
+import com.repea.studytrack.ui.theme.LocalAppThemeStyle
 import com.repea.studytrack.ui.components.StudyCapsuleButton
 import com.repea.studytrack.ui.components.StudyHeroCard
 import com.repea.studytrack.ui.components.StudyMetricCard
@@ -104,19 +106,29 @@ fun ExamListScreen(
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            FloatingActionButton(
+            val isLiquidGlass = LocalAppThemeStyle.current == AppThemeStyle.LIQUID_GLASS
+            val buttonContentColor = if (isLiquidGlass) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onPrimary
+            }
+            GlassButton(
                 onClick = { navController.navigate(Screen.AddExam.route) },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = RoundedCornerShape(20.dp)
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 18.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "添加成绩")
-                    Text("添加成绩")
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "添加成绩",
+                        tint = buttonContentColor
+                    )
+                    Text(
+                        "添加成绩",
+                        color = buttonContentColor
+                    )
                 }
             }
         }

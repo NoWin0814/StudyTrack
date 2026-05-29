@@ -193,26 +193,16 @@ fun StudyHeroCard(
     value: String,
     badge: String? = null,
     subtitle: String? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tintBrush: Brush? = null
 ) {
     val themeStyle = LocalAppThemeStyle.current
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(22.dp),
-        color = Color.Transparent
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = if (themeStyle == AppThemeStyle.LIQUID_GLASS) 0.72f else 0.78f),
-                            MaterialTheme.colorScheme.primary,
-                            Color(0xFF6F87FF)
-                        )
-                    )
-                )
-                .padding(18.dp)
+
+    if (themeStyle == AppThemeStyle.LIQUID_GLASS) {
+        GlassCard(
+            modifier = modifier,
+            shape = RoundedCornerShape(22.dp),
+            contentPadding = 18.dp
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(
@@ -224,25 +214,25 @@ fun StudyHeroCard(
                         Text(
                             text = title,
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.84f)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.9f)
                         )
                         Text(
                             text = value,
                             style = MaterialTheme.typography.headlineLarge,
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold
                         )
                     }
                     if (!badge.isNullOrBlank()) {
                         Surface(
                             shape = RoundedCornerShape(999.dp),
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.16f)
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
                         ) {
                             Text(
                                 text = badge,
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                 style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -251,8 +241,70 @@ fun StudyHeroCard(
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.88f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.88f)
                     )
+                }
+            }
+        }
+    } else {
+        Surface(
+            modifier = modifier,
+            shape = RoundedCornerShape(22.dp),
+            color = Color.Transparent
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        brush = tintBrush ?: Brush.horizontalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
+                                MaterialTheme.colorScheme.primary,
+                                Color(0xFF6F87FF)
+                            )
+                        )
+                    )
+                    .padding(18.dp)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(
+                                text = title,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.84f)
+                            )
+                            Text(
+                                text = value,
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        if (!badge.isNullOrBlank()) {
+                            Surface(
+                                shape = RoundedCornerShape(999.dp),
+                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.16f)
+                            ) {
+                                Text(
+                                    text = badge,
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                        }
+                    }
+                    if (!subtitle.isNullOrBlank()) {
+                        Text(
+                            text = subtitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.88f)
+                        )
+                    }
                 }
             }
         }
